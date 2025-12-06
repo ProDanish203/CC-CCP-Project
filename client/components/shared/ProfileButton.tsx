@@ -44,7 +44,7 @@ export const ProfileButton = () => {
     if (!isLoading && data && data.success && data.response) {
       setUser(data.response);
     } else if (!isLoading && data && !data.success) {
-      typeof window !== undefined && localStorage.removeItem("token");
+      if (typeof window !== "undefined") localStorage.removeItem("token");
       handleLogout();
       router.push("/login");
     }

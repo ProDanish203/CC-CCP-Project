@@ -1,0 +1,55 @@
+---
+- name: Deploy Next.js Application
+  hosts: all
+  become: true
+  gather_facts: true
+
+  pre_tasks:
+    - name: Wait for SSH connection
+      wait_for_connection:
+        timeout: 300
+        delay: 5
+
+    - name: Gather system information
+      setup:
+
+    - name: Display target host information
+      debug:
+        msg:
+          - "Deploying to: {{ ansible_host }}"
+          - "OS: {{ ansible_distribution }} {{ ansible_distribution_version }}"
+          - "Architecture: {{ ansible_architecture }}"
+
+  roles:
+    - system
+    - docker
+    - nginx
+
+  post_tasks:
+    - name: Verify application is accessible
+      uri:
+        url: "http://{{ ansible_host }}"
+        method: GET
+        status_code: 200
+        timeout: 30
+      register: app_response
+      retries: 3
+      delay: 10
+
+    - name: Display deployment success
+      debug:
+        msg:
+          - "=== DEPLOYMENT SUCCESSFUL ==="
+          - "Application URL: http://{{ ansible_host }}"
+          - "Container Status: Running"
+          - "Nginx Status: Active"
+          - "=== DEPLOYMENT COMPLETE ==="
+      when: app_response.status == 200
+
+    - name: Display deployment failure
+      debug:
+        msg:
+          - "=== DEPLOYMENT FAILED ==="
+          - "Application is not accessible"
+          - "Please check logs for more information"
+      when: app_response.status != 200

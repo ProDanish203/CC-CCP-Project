@@ -1,0 +1,4 @@
+---
+- name: system updated
+  debug:
+    msg: "System packages updated successfully"

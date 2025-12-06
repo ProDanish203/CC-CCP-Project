@@ -1,0 +1,20 @@
+# Application Configuration
+app_name: "demo"
+app_port: 3000
+docker_image: "prodanish203/hackops-client:latest"
+container_name: "demo-app"
+
+# Nginx Configuration
+nginx_port: 80
+nginx_config_path: /etc/nginx/sites-available/default
+nginx_sites_enabled: /etc/nginx/sites-enabled/default
+
+# System packages
+system_packages:
+  - curl
+  - wget
+  - gnupg
+  - ca-certificates
+  - software-properties-common
+  - apt-transport-https
+  - unzip
